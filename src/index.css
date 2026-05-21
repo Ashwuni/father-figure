@@ -1,0 +1,224 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    background: #050505;
+    color: #f5f0eb;
+    font-family: 'Inter', system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+
+  body {
+    background: #050505;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  #root {
+    min-height: 100vh;
+    width: 100%;
+  }
+
+  ::selection {
+    background: rgba(201, 168, 76, 0.3);
+    color: #f5f0eb;
+  }
+}
+
+@layer utilities {
+  /* Film grain overlay */
+  .film-grain::before {
+    content: '';
+    position: fixed;
+    inset: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.4'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 128px 128px;
+    opacity: 0.035;
+    pointer-events: none;
+    z-index: 9999;
+    animation: grain 0.5s steps(1) infinite;
+  }
+
+  /* Vignette */
+  .vignette::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: radial-gradient(ellipse at center,
+      transparent 40%,
+      rgba(5,5,5,0.4) 70%,
+      rgba(5,5,5,0.85) 100%
+    );
+    pointer-events: none;
+    z-index: 9998;
+  }
+
+  /* Chromatic aberration */
+  .chromatic {
+    filter: none;
+    position: relative;
+  }
+  .chromatic::before,
+  .chromatic::after {
+    content: attr(data-text);
+    position: absolute;
+    inset: 0;
+  }
+  .chromatic::before {
+    color: rgba(233,30,140,0.3);
+    transform: translateX(-1px);
+  }
+  .chromatic::after {
+    color: rgba(201,168,76,0.3);
+    transform: translateX(1px);
+  }
+
+  /* Glow text effects */
+  .text-glow-gold {
+    text-shadow:
+      0 0 10px rgba(201, 168, 76, 0.8),
+      0 0 30px rgba(201, 168, 76, 0.4),
+      0 0 60px rgba(201, 168, 76, 0.2);
+  }
+
+  .text-glow-rose {
+    text-shadow:
+      0 0 10px rgba(233, 30, 140, 0.8),
+      0 0 30px rgba(233, 30, 140, 0.4),
+      0 0 60px rgba(233, 30, 140, 0.2);
+  }
+
+  .text-glow-white {
+    text-shadow:
+      0 0 10px rgba(245, 240, 235, 0.6),
+      0 0 30px rgba(245, 240, 235, 0.3);
+  }
+
+  /* Glassmorphism */
+  .glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .glass-gold {
+    background: rgba(201, 168, 76, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(201, 168, 76, 0.15);
+  }
+
+  /* Shimmer effect */
+  .shimmer {
+    background: linear-gradient(
+      105deg,
+      transparent 40%,
+      rgba(201, 168, 76, 0.15) 50%,
+      transparent 60%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 2.5s linear infinite;
+  }
+
+  /* Scanline */
+  .scanlines {
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.03) 2px,
+      rgba(0,0,0,0.03) 4px
+    );
+    pointer-events: none;
+  }
+
+  /* Cinematic letterbox */
+  .letterbox::before,
+  .letterbox::after {
+    content: '';
+    position: fixed;
+    left: 0;
+    right: 0;
+    height: 6vh;
+    background: #000;
+    z-index: 9997;
+    pointer-events: none;
+  }
+  .letterbox::before { top: 0; }
+  .letterbox::after { bottom: 0; }
+}
+
+@keyframes grain {
+  0%, 100% { transform: translate(0, 0); }
+  10% { transform: translate(-2%, -3%); }
+  20% { transform: translate(1%, 2%); }
+  30% { transform: translate(3%, -1%); }
+  40% { transform: translate(-1%, 3%); }
+  50% { transform: translate(-3%, 1%); }
+  60% { transform: translate(2%, -2%); }
+  70% { transform: translate(1%, 3%); }
+  80% { transform: translate(-2%, -1%); }
+  90% { transform: translate(3%, 2%); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes flicker {
+  0%, 19.999%, 22%, 62.999%, 64%, 64.999%, 70%, 100% { opacity: 1; }
+  20%, 21.999%, 63%, 63.999%, 65%, 69.999% { opacity: 0.4; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-15px) rotate(1deg); }
+  66% { transform: translateY(-8px) rotate(-0.5deg); }
+}
+
+@keyframes pulse-ring {
+  0% { transform: scale(0.8); opacity: 1; }
+  100% { transform: scale(2.5); opacity: 0; }
+}
+
+@keyframes streak-glow {
+  0%, 100% { box-shadow: 0 0 30px rgba(201,168,76,0.3); }
+  50% { box-shadow: 0 0 80px rgba(201,168,76,0.8), 0 0 120px rgba(201,168,76,0.3); }
+}
+
+@keyframes correct-burst {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.05); opacity: 0.9; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes wrong-shake {
+  0%, 100% { transform: translateX(0); }
+  15% { transform: translateX(-8px) rotate(-1deg); }
+  30% { transform: translateX(8px) rotate(1deg); }
+  45% { transform: translateX(-6px) rotate(-0.5deg); }
+  60% { transform: translateX(6px) rotate(0.5deg); }
+  75% { transform: translateX(-3px); }
+  90% { transform: translateX(3px); }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: #0a0a0a; }
+::-webkit-scrollbar-thumb { background: rgba(201,168,76,0.4); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: rgba(201,168,76,0.7); }
